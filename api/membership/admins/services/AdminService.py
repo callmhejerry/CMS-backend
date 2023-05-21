@@ -168,4 +168,33 @@ class AdminService():
             abort(403, description="INVALID EMAIL OR PASSWORD")
         
         return admin
-    
+
+
+    def create_admin(self, admin_id, data):
+        """creates an admin"""
+        admin = self.admin_dao.get_by_id(admin_id)
+        if admin is None:
+            abort(404, description="ONLY ADMINS CAN CREATE ADMINS")
+        
+        if data.get("first_name", None) is None:
+            abort(403, description="FIRST NAME MUST BE PRESENT")
+        if data.get('last_name', None) is None:
+            abort(403, description="LAST NAME MUST BE PRESENT")
+        if data.get("email_address", None) is None:
+            abort(403, description="EMAIL ADDRESS MUST BE PRESENT")
+        if data.get("phone_number", None) is None:
+            abort(403, description="PHONE NUMBER MUST BE PRESENT")
+        if data.get("password", None) is None:
+            abort(403, description="PASSWORD MUST BE PRESENT")
+        if data.get("church_id", None) is None:
+            abort(403, description="CHURCH ID MUST BE PRESENT")
+        
+        admin = self.admin_dao.get_by_email(data['email_address'])
+        if admin is None:
+            admin = self.admin_dao.create(data)
+        else:
+            abort(403, description="ADMIN ALREADY PRESENT WITH THE EMAIL {}".format(
+                data['email_address']
+            ))
+        
+        return admin

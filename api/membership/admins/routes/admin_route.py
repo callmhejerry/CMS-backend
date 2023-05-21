@@ -88,3 +88,16 @@ def sign_in_admin():
     admin = admin_service.sign_in(data)
     
     return jsonify(admin.to_dict()), 200
+
+
+@membership_blue_print.route('admin/<admin_id>/create-admin/',
+                             strict_slashes=False,
+                             methods=["POST"])
+def create_admin_by_admin(admin_id):
+    """ROUTE - creates an admin"""
+    if not request.is_json:
+        abort(404, description="INVALID JSON")
+    data = request.get_json()
+    admin = admin_service.create_admin(admin_id)
+    
+    return jsonify(admin.to_dict()), 200

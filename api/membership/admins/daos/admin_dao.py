@@ -1,4 +1,5 @@
 from api.membership.admins.models.admin_model import AdminModel
+from api import db
 
 class AdminDao():
     """Class to access admin object"""
@@ -20,3 +21,10 @@ class AdminDao():
         """get admin by email"""
         admin = AdminModel.query.filter_by(email_address=email).first()
         return admin
+
+    @staticmethod
+    def create(data):
+        """creates an admin"""
+        admin = AdminModel(**data)
+        db.session.add(admin)
+        db.session.commit()
