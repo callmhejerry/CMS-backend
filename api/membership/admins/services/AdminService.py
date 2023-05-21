@@ -74,7 +74,9 @@ class AdminService():
             abort(404, description="INVALID MEMBER ID")
         return member
 
+
     def delete_member(self, admin_id, member_id):
+        """deletes a memeber from the database"""
         admin = self.admin_dao.get_by_id(admin_id)
         
         if admin is None:
@@ -83,3 +85,87 @@ class AdminService():
         if member is None:
             abort(404, description="MEMBER NOT FOUND")
         return member
+
+
+    def get_members_of_a_church(self, admin_id):
+        """gets all members of a church"""
+        admin = self.admin_dao.get_by_id(admin_id)
+        if admin is None:
+            abort(404, description="ONLY ADMINS CAN GET MEMBERS")
+        church = admin.church
+        members = ChurchDao.get_all_members(church.id)
+        if members is None:
+            abort(404, description="INVALID CHURCH")
+        members_list = list(map(lambda member: member.to_dict(), members))
+        return members_list
+
+
+    def filter_members(self, admin_id, church_id, data):
+        """filters members of a church based on some fields"""
+        admin = self.admin_dao.get_by_id(admin_id)
+        if admin is None:
+            abort(404, description="ONLY ADMINS CAN FILTER MEMBERS")
+        members = ChurchDao.get_all_members(church_id)
+        if members is None:
+            abort(404, description="INVALID CHURCH")
+        gender = data.get('gender', None)
+        relationship_status = data.get('relationship_status', None)
+        
+        filter_list = []
+        
+        # filter by gender first
+        if gender is not None:
+            gender = Gender.get_gender(gender)
+            for member in members:
+                if member.gender == gender:
+                    filter_list.append(member)
+        
+        # filter by relationship_status
+        if relationship_status is not None:
+            relationship_status = RelationshipStatus.get_status(relationship_status)
+            for member in members:
+                if member.relationship_status == relationship_status:
+                    filter_list.append(member)
+        
+        members_list = list(map(lambda member: member.to_dict(), filter_list))
+        return members_list
+
+
+    def search_member_by_name(self, admin_id, data):
+        """searches for a member by id"""
+        admin = self.admin_dao.get_by_id(admin_id)
+        if admin is None:
+            abort(404, description="ONLY ADMINS CAN FILTER MEMBERS")
+        church = admin.church
+        members = ChurchDao.get_by_id(church.id)
+        name = data.get('name', None)
+        if name is None:
+            abort(403, description="NAME MUST BE PRESENT")
+        
+        names = name.split(" ")
+        filter_list = []
+        
+        for n in names:
+            for member in members:
+                if member.first_name == n or member.last_name == n:
+                    filter_list.append(member)
+        
+        members_list = list(map(lambda member: member.to_dict(), filter_list))
+        return members_list
+
+
+    def sign_in(self, data):
+        """signs in an admin"""
+        email = data.get('email_address', None)
+        password = data.get('password', None)
+        
+        if email is None or password is None:
+            abort(404, description="EMAIL AND PASSWORD MUST BE PROVIDED")
+        
+        admin = self.admin_dao.get_by_email(email)
+        
+        if not admin.verify(password, admin.password_hash):
+            abort(403, description="INVALID EMAIL OR PASSWORD")
+        
+        return admin
+    

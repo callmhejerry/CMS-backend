@@ -15,3 +15,8 @@ class AdminDao():
         admins = AdminModel.query.all()
         return admins
     
+    @staticmethod
+    def get_by_email(email):
+        """get admin by email"""
+        admin = AdminModel.query.filter_by(email_address=email).first()
+        return admin

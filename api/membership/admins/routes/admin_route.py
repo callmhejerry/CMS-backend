@@ -53,3 +53,38 @@ def all_members_of_a_church(admin_id, church_id):
     members = admin_service.get_members_of_a_church(admin_id, church_id)
     return jsonify(members), 200
 
+
+@membership_blue_print.route("/admin/<admin_id>/members/<church_id>/",
+                             strict_slashes=False,
+                             methods=["POST"])
+def filter_members_of_a_church(admin_id, church_id):
+    """ROUTE - filters member of a church"""
+    if not request.is_json:
+        abort(404, description="INVALID JSON")
+    data = request.get_json()
+    members = admin_service.filer_members(admin_id, church_id, data)
+    return jsonify(members), 200
+
+
+@membership_blue_print.route('/admin/<admin_id>/members/search-by-name/',
+                             strict_slashes=False,
+                             methods=["POST"])
+def search_by_name(admin_id):
+    """ROUTE - searches for a member"""
+    if not request.is_json:
+        abort(404, description="INVALID JSON")
+    data = request.get_json()
+    members = admin_service.search_member_by_name(admin_id, data)
+    return jsonify(members), 200
+
+
+@membership_blue_print.route('/admin/sign-in', strict_slashes=False,
+                             methods=["POST"])
+def sign_in_admin():
+    """ROUTE - admin sign in"""
+    if not request.is_json:
+        abort(404, description="INVALID JSON")
+    data = request.get_json()
+    admin = admin_service.sign_in(data)
+    
+    return jsonify(admin.to_dict()), 200

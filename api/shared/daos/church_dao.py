@@ -22,3 +22,11 @@ class ChurchDao():
         churches = ChurchModel.query.all()
         return churches
     
+    @staticmethod
+    def get_all_members(church_id):
+        """get all members of a church"""
+        church = ChurchDao.get_by_id(church_id)
+        if church is not None:
+            members = church.members
+            return members
+        return church
