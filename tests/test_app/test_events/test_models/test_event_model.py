@@ -1,9 +1,9 @@
 import unittest
-from app import create_app, db
-from app.events.models.event_category_model import EventCategoryModel
-from app.events.models.event_model import EventModel
-from app.membership.admins.models.admin_model import AdminModel
-from app.shared.models.church_model import ChurchModel
+from api import create_app, db
+from api.events.models.event_category_model import EventCategoryModel
+from api.events.models.event_model import EventModel
+from api.membership.admins.models.admin_model import AdminModel
+from api.shared.models.church_model import ChurchModel
 from datetime import date, time, datetime
 
 class TestEventModel(unittest.TestCase):

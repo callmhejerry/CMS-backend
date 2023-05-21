@@ -1,5 +1,5 @@
 from .base_model import BaseModel
-from app import db
+from api import db
 
 
 class ChurchModel(BaseModel):

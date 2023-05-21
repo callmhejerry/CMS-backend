@@ -1,5 +1,5 @@
-from app import db
-from app.shared.models.base_model import BaseModel
+from api import db
+from api.shared.models.base_model import BaseModel
 from sqlalchemy import DateTime
 
 class EventModel(BaseModel):

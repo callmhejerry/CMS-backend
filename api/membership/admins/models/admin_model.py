@@ -1,5 +1,5 @@
-from app.shared.models.base_model import BaseModel
-from app import db
+from api.shared.models.base_model import BaseModel
+from api import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
