@@ -9,6 +9,16 @@ class Gender(Enum):
     FEMALE = 'F'
     MALE = 'M'
     
+    @staticmethod
+    def get_gender(gender):
+        """convert from string to gender"""
+        gender = gender.lower()
+        if gender == 'female' or gender == 'f':
+            return Gender.FEMALE
+        if gender == 'male' or gender == 'm':
+            return Gender.MALE
+
+        return Gender.MALE
     
 class RelationshipStatus(Enum):
     """class for representing relationship status"""
@@ -16,7 +26,17 @@ class RelationshipStatus(Enum):
     SINGLE = 'Single'
     DIVORSE = 'Divorse'
     
-    
+    @staticmethod
+    def get_status(status):
+        """convert to relationship status"""
+        status = status.lower()
+        if status == 'married':
+            return RelationshipStatus.MARRIED
+        if status == 'divorse':
+            return RelationshipStatus.DIVORSE
+        
+        return RelationshipStatus.SINGLE
+
 class MemberModel(BaseModel):
     """
     The memeber object class
@@ -26,8 +46,8 @@ class MemberModel(BaseModel):
     last_name = db.Column(db.String(20), nullable=False)
     email_address = db.Column(db.String(60), unique=True, nullable=False)
     phone_number = db.Column(db.String(15))
-    gender = db.Column(db.Enum(Gender))
-    relationship_status = db.Column(db.Enum(RelationshipStatus))
+    gender = db.Column(db.Enum(Gender), nullable=False)
+    relationship_status = db.Column(db.Enum(RelationshipStatus), nullable=False)
     residential_address = db.Column(db.String(100))
     church_id = db.Column(db.String(60), db.ForeignKey('churches.id'))
     dob = db.Column(db.Date)
@@ -59,6 +79,7 @@ class MemberModel(BaseModel):
     def to_dict(self):
         """return the dictionary representation of the member"""
         new_dict = {}
+        new_dict['id'] = self.id
         new_dict['first_name'] = self.first_name
         new_dict['last_name'] = self.last_name
         new_dict['email_address'] = self.email_address

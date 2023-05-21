@@ -10,6 +10,7 @@ from .membership.admins.models.admin_model import AdminModel
 from .membership.members.models.member_model import MemberModel
 from .shared.models.base_model import BaseModel
 from .shared.models.church_model import ChurchModel
+from .membership import membership_blue_print
 
 def create_app(configuration):
     """Factory function to create and return
@@ -22,6 +23,7 @@ def create_app(configuration):
     with app.app_context():
         db.create_all()
     
+    app.register_blueprint(membership_blue_print, url_prefix="/api/membership")
     @app.shell_context_processor
     def make_shell():
         """return objects in the shell"""
