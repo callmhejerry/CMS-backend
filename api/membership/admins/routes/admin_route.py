@@ -101,3 +101,16 @@ def create_admin_by_admin(admin_id):
     admin = admin_service.create_admin(admin_id)
     
     return jsonify(admin.to_dict()), 200
+
+
+@membership_blue_print.route('/admin/<admin_id>/update',
+                             strict_slashes=False,
+                             methods=["PUT"])
+def update_admin(admin_id):
+    """ROUTE - updates admin"""
+    if not request.is_json:
+        abort(404, description="INVALID JSON")
+    data = request.get_json()
+    admin = admin_service.update_admin(admin_id, data)
+    
+    return jsonify(admin.to_dict()), 200

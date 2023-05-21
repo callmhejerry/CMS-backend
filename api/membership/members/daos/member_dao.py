@@ -41,7 +41,6 @@ class MemberDao():
             return None
         for key, value in data.items():
             setattr(member, key, value)
-        db.session.add(member)
         db.session.commit()
         return member
     

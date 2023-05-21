@@ -35,6 +35,8 @@ class AdminService():
             abort(403, "last name must be present")
         if data.get('relationship_status', None) is None:
             abort(403, "relationship status must be present")
+        if data.get('church_id', None) is not None:
+            del data['church_id']
         
         data['gender'] = Gender.get_gender(data['gender'])
         data['relationship_status'] = RelationshipStatus.get_status(data['relationship_status'])
@@ -68,6 +70,8 @@ class AdminService():
             data['dob'] = date.fromisoformat(data['dob'])
         if data.get('church_id') is not None:
             abort(403, description="ADMIN CANNOT UPDATE CHURCH")
+        if data.get("id", None) is not None:
+            del data['id']
         
         member = MemberDao.update(member_id, data=data)
         if member is None:
@@ -197,4 +201,17 @@ class AdminService():
                 data['email_address']
             ))
         
+        return admin
+
+
+    def update_admin(self, admin_id, data):
+        """update admin record"""
+        if data.get('id', None) is not None:
+            del data['id']
+        if data.get("church_id", None) is not None:
+            abort(403, description="CANNOT UPDATE CHURCH")
+        
+        admin = self.admin_dao.update(admin_id, data)
+        if admin is None:
+            abort(404, description="ADMIN NOT FOUND")
         return admin
