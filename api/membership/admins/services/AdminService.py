@@ -88,7 +88,7 @@ class AdminService():
         member = MemberDao.delete(member_id)
         if member is None:
             abort(404, description="MEMBER NOT FOUND")
-        return member
+        return {}
 
 
     def get_members_of_a_church(self, admin_id):
@@ -215,3 +215,50 @@ class AdminService():
         if admin is None:
             abort(404, description="ADMIN NOT FOUND")
         return admin
+
+
+    def create_church(self, admin_id, data):
+        """creates a church in the database"""
+        admin = self.admin_dao.get_by_id(admin_id)
+        if admin is None:
+            abort(404, description="ONLY ADMINS CAN CREATE A CHURCH")
+        
+        if data.get('name', None) is None:
+            abort(403, description="NAME MUST BE PRESENT")
+        if data.get('location', None) is None:
+            abort(403, description="LOCATION MUST BE PRESENT")
+        
+        church = ChurchDao.get_by_name(data['name'])
+        
+        if church is not None:
+            abort(403, description="CHURCH ALREADY EXIST")
+        church = ChurchDao.create(data)
+        
+        return church
+
+
+    def delete_church(self, admin_id, church_id):
+        """deltetes a church from the database"""
+        admin = self.admin_dao.get_by_id(admin_id)
+        if admin is None:
+            abort(404, description="ONLY ADMINS CAN DELETE A CHURCH")
+        church = ChurchDao.delete(church_id)
+        
+        if church is None:
+            abort(404, description="NO CHURCH FOUND")
+        return {}
+
+    def update_church(self, admin_id, church_id, data):
+        """updates a church record"""
+        admin = self.admin_dao.get_by_id(admin_id)
+        if admin is None:
+            abort(404, description="ONLY ADMINS CAN UPDATE A CHURCH")
+        if data.get('id', None) is not None:
+            del data['id']
+        
+        church = ChurchDao.update(church_id, data)
+        if church is None:
+            abort(404, "NO CHURCH FOUND")
+        return church
+
+        

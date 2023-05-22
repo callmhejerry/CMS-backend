@@ -1,4 +1,5 @@
 from api.shared.models.church_model import ChurchModel
+from api import db
 
 
 class ChurchDao():
@@ -29,4 +30,33 @@ class ChurchDao():
         if church is not None:
             members = church.members
             return members
+        return church
+
+    @staticmethod
+    def create(data):
+        """create a church in the database"""
+        church = ChurchModel(**data)
+        db.session.add(church)
+        db.session.commit()
+        return church
+    
+    @staticmethod
+    def delete(church_id):
+        """deletes a church"""
+        church = ChurchDao.get_by_id(church_id)
+        
+        if church is None:
+            db.session.delete(church)
+            db.session.commit()
+        return church
+
+    @staticmethod
+    def update(church_id, data):
+        """updates a church record in the database"""
+        church = ChurchDao.get_by_id(church_id)
+        
+        if church is not None:
+            for key, value in data:
+                setattr(church, key, value)
+            db.session.commit()
         return church

@@ -1,5 +1,4 @@
 from api.membership import membership_blue_print
-from api import db
 from api.membership.admins.models.admin_model import AdminModel
 from flask import abort, request, jsonify
 from api.membership.admins.services.AdminService import AdminService
@@ -114,3 +113,38 @@ def update_admin(admin_id):
     admin = admin_service.update_admin(admin_id, data)
     
     return jsonify(admin.to_dict()), 200
+
+
+@membership_blue_print.route('/admin/<admin_id>/create-church',
+                             strict_slashes=False,
+                             methods=["POST"])
+def create_church(admin_id):
+    """ROUTE - create a church"""
+    if not request.is_json:
+        abort(404, description="INVALID JSON")
+    data = request.get_json()
+    church = admin_service.create_church(admin_id, data)
+    
+    return jsonify(church.to_dict()), 200
+
+
+@membership_blue_print.route('/admin/<admin_id>/delete-church/<church_id>',
+                             strict_slashes=False,
+                             methods=["DELETE"])
+def delete_church(admin_id, church_id):
+    """ROUTE - deletes a church record"""
+    church = admin_service.delete_church(admin_id, church_id)
+    return jsonify(church), 200
+
+
+@membership_blue_print.route("/admin/<admin_id>/update-church/<church_id>",
+                             strict_slashes=False,
+                             methods=["PUT"])
+def update_church(admin_id, church_id):
+    """ROUTE - update church"""
+    if not request.is_json:
+        abort(404, description="INVALID JSON")
+    data =request.get_json()
+    church = admin_service.update_church(admin_id, church_id, data)
+    
+    return jsonify(church.to_dict()), 200

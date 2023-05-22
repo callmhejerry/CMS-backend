@@ -1,5 +1,7 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from api.shared.daos.church_dao import ChurchDao
+from api.shared.services.church_service import ChurchService
 from config import config
 
 db = SQLAlchemy()
@@ -34,4 +36,11 @@ def create_app(configuration):
                     EventModel=EventModel,
                     EventCategoryModel=EventCategoryModel,
                     MemberModel=MemberModel)
+    
+    @app.route('/api/churches',strict_slashes=False)
+    def all_churches():
+        churches = ChurchService().get_all_churches()
+        return jsonify(churches), 200
+    
+    
     return app
