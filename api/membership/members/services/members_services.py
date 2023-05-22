@@ -82,7 +82,7 @@ class MemberService():
         member = self.member_dao.get_by_email(data["email_address"])
         if member is None:
             abort(403, description="PLEASE REGISTER")
-        if member.verify(data["password"], member.password_hash):
+        if member.verify(data["password"]):
             return member
         else:
             abort(403, description="INVALID EMAIL OR PASSWORD")

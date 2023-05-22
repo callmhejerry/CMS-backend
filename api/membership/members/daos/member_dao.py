@@ -20,7 +20,7 @@ class MemberDao():
     @staticmethod
     def get_all():
         """get all members"""
-        member = MemberModel.query.all()
+        member = MemberModel.query.limit(10).all()
         return member
     
     @staticmethod

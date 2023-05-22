@@ -67,9 +67,9 @@ class MemberModel(BaseModel):
         """generate password hash for password"""
         self.password_hash = generate_password_hash(password)
     
-    def verify(self, password_hash, password)->bool:
+    def verify(self, password)->bool:
         """check the password stored if it matches"""
-        return check_password_hash(password_hash, password)
+        return check_password_hash(self.password_hash, password)
     
     def __str__(self):
         """String to print for the member object"""
@@ -88,4 +88,5 @@ class MemberModel(BaseModel):
         new_dict['gender'] = self.gender.value
         new_dict['relationship_status'] = self.relationship_status.value
         new_dict['dob'] = str(self.dob)
+        new_dict['church'] = self.church.name
         return new_dict

@@ -56,7 +56,7 @@ class ChurchDao():
         church = ChurchDao.get_by_id(church_id)
         
         if church is not None:
-            for key, value in data:
+            for key, value in data.items():
                 setattr(church, key, value)
             db.session.commit()
         return church

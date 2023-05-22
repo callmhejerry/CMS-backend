@@ -35,7 +35,7 @@ def activate_member():
     if not request.is_json:
         abort(404, description="INVALID JSON")
     data = request.get_json()
-    member = member_service.activate(data)
+    member = member_service.activate_member(data)
     member_json = member.to_dict()
     if member_json.get("password_hash", None) is not None:
         del member_json["password_hash"]

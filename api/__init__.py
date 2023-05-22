@@ -1,11 +1,11 @@
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from api.shared.daos.church_dao import ChurchDao
-from api.shared.services.church_service import ChurchService
 from config import config
 
 db = SQLAlchemy()
 
+from api.shared.daos.church_dao import ChurchDao
+from api.shared.services.church_service import ChurchService
 from .events.models.event_category_model import EventCategoryModel
 from .events.models.event_model import EventModel
 from .membership.admins.models.admin_model import AdminModel

@@ -28,13 +28,14 @@ class AdminDao():
         admin = AdminModel(**data)
         db.session.add(admin)
         db.session.commit()
+        return admin
 
     @staticmethod
     def update(admin_id, data):
         """update admin record"""
         admin = AdminDao.get_by_id(admin_id)
         if admin is not None:
-            for key, value in data:
+            for key, value in data.items():
                 setattr(admin, key, value)
             db.session.commit()
 

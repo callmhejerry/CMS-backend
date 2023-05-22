@@ -1,6 +1,5 @@
-from .base_model import BaseModel
 from api import db
-
+from .base_model import BaseModel
 
 class ChurchModel(BaseModel):
     """Model for the church object"""
@@ -17,3 +16,12 @@ class ChurchModel(BaseModel):
     def __str__(self):
         """string representation of the Church"""
         return "Church(id : {}, name : {})".format(self.id, self.name)
+
+    def to_dict(self):
+        """return the dictionary representation of church"""
+        new_dict = {}
+        new_dict['name'] = self.name
+        new_dict["location"] = self.location
+        new_dict["id"] = self.id
+        
+        return new_dict

@@ -29,14 +29,16 @@ class AdminModel(BaseModel):
         """generate password hash for password"""
         self.password_hash = generate_password_hash(password)
     
-    def verify(self, password_hash, password)->bool:
+    def verify(self, password)->bool:
         """check the password stored if it matches"""
-        return check_password_hash(password_hash, password)
+        return check_password_hash(self.password_hash, password)
 
     def to_dict(self):
         """dictionary representation of the admin object"""
-        new_dict = self.__dict__.copy()
-        del new_dict['_sa_instance_state']
-        del new_dict['password_hash']
-        
+        new_dict = {}
+        new_dict["first_name"] = self.first_name
+        new_dict["last_name"] = self.last_name
+        new_dict["email_address"] = self.email_address
+        new_dict["phone_number"] = self.phone_number
+        new_dict["church"] = self.church.name
         return new_dict

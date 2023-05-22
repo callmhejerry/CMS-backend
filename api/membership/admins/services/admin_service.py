@@ -58,7 +58,7 @@ class AdminService():
         if admin is None:
             abort(404, description="ONLY ADMINS CAN UPDATE A MEMBER")
         
-        if member_id is "":
+        if member_id == "":
             abort(404, description="INVALID MEMBER ID")
         if data.get('password', None) is not None:
             abort(403, description="ADMIN CANNOT UPDATE PASSWORD FIELD FOR MEMBERS")
@@ -104,11 +104,12 @@ class AdminService():
         return members_list
 
 
-    def filter_members(self, admin_id, church_id, data):
+    def filter_members(self, admin_id, data):
         """filters members of a church based on some fields"""
         admin = self.admin_dao.get_by_id(admin_id)
         if admin is None:
             abort(404, description="ONLY ADMINS CAN FILTER MEMBERS")
+        church_id = admin.church.id
         members = ChurchDao.get_all_members(church_id)
         if members is None:
             abort(404, description="INVALID CHURCH")
@@ -132,6 +133,7 @@ class AdminService():
                     filter_list.append(member)
         
         members_list = list(map(lambda member: member.to_dict(), filter_list))
+
         return members_list
 
 
@@ -141,7 +143,7 @@ class AdminService():
         if admin is None:
             abort(404, description="ONLY ADMINS CAN FILTER MEMBERS")
         church = admin.church
-        members = ChurchDao.get_by_id(church.id)
+        members = ChurchDao.get_by_id(church.id).members
         name = data.get('name', None)
         if name is None:
             abort(403, description="NAME MUST BE PRESENT")
@@ -168,7 +170,7 @@ class AdminService():
         
         admin = self.admin_dao.get_by_email(email)
         
-        if not admin.verify(password, admin.password_hash):
+        if not admin.verify(password):
             abort(403, description="INVALID EMAIL OR PASSWORD")
         
         return admin
@@ -196,12 +198,12 @@ class AdminService():
         admin = self.admin_dao.get_by_email(data['email_address'])
         if admin is None:
             admin = self.admin_dao.create(data)
+            return admin
         else:
             abort(403, description="ADMIN ALREADY PRESENT WITH THE EMAIL {}".format(
                 data['email_address']
             ))
-        
-        return admin
+
 
 
     def update_admin(self, admin_id, data):
@@ -248,7 +250,7 @@ class AdminService():
             abort(404, description="NO CHURCH FOUND")
         return {}
 
-    def update_church(self, admin_id, church_id, data):
+    def update_church(self, admin_id, data):
         """updates a church record"""
         admin = self.admin_dao.get_by_id(admin_id)
         if admin is None:
@@ -256,6 +258,7 @@ class AdminService():
         if data.get('id', None) is not None:
             del data['id']
         
+        church_id = admin.church.id
         church = ChurchDao.update(church_id, data)
         if church is None:
             abort(404, "NO CHURCH FOUND")
