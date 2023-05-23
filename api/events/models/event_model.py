@@ -7,7 +7,7 @@ class EventModel(BaseModel):
     
     __tablename__ = 'events'
     title = db.Column(db.String(60), nullable=False)
-    thumbnail = db.Column(db.String(100))
+    thumbnail = db.Column(db.String(100), nullable=False)
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=False)
     start_time = db.Column(db.Time, nullable=False)
@@ -28,13 +28,21 @@ class EventModel(BaseModel):
         return "Event(id : {}, title: {})".format(self.id, self.title)
     
     def to_dict(self):
-        new_dict = self.__dict__.copy()
-        del new_dict['_sa_instance_state']
-        new_dict['start_date'] = str(new_dict['start_date'])
-        new_dict['end_date'] = str(new_dict['end_date'])
-        new_dict['start_time'] = str(new_dict['start_time'])
-        new_dict['end_time'] = str(new_dict['end_time'])
-        new_dict['created_at'] = str(new_dict['created_at'])
+        new_dict = {}
         
+        new_dict['start_date'] = str(self.start_date)
+        new_dict['title'] = self.title
+        new_dict["thumbnail"] = self.thumbnail
+        new_dict["venue"] = self.venue
+        new_dict["location"] = self.location
+        new_dict['start_date'] = str(self.start_date)
+        new_dict['end_date'] = str(self.end_date)
+        new_dict['start_time'] = str(self.start_time)
+        new_dict['end_time'] = str(self.end_time)
+        new_dict['created_at'] = str(self.created_at)
+        new_dict['end_date'] = str(self.end_date)
+        new_dict['start_time'] = str(self.start_time)
+        new_dict['end_time'] = str(self.end_time)
+        new_dict['created_at'] = str(self.created_at)        
         return new_dict
     

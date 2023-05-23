@@ -1,9 +1,16 @@
-from os import getenv
+from os import getenv, path
+
+
+project_dir = path.dirname(path.abspath(__file__))
+path_to_flier = 'api/events/fliers'
+total_path = path.join(project_dir, path_to_flier)
+
 class Config():
     """class for all configuration"""
     SQL_ALCHEMY_TRACK_MODIFICATION = False
     SECRET_KEY = getenv('SECRET_KEY') or 'cms_secret_key'
     environment = 'development'
+    UPLOADED_FLIERS_DEST = total_path
 
 
 class Development(Config):
