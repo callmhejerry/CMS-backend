@@ -77,7 +77,7 @@ class EventDao():
     def get_past_events(today, limit=None):
         """get past events"""
         if limit:
-            events = EventModel.query.limit(limit).filter(EventModel.end_date < today).all()
+            events = EventModel.query.filter(EventModel.end_date < today).limit(limit)
         else:
             events = EventModel.query.filter(EventModel.end_date < today).all()
         return events

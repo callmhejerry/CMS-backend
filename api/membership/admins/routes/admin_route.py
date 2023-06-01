@@ -85,8 +85,9 @@ def sign_in_admin():
         abort(404, description="INVALID JSON")
     data = request.get_json()
     admin = admin_service.sign_in(data)
-    
-    return jsonify(admin.to_dict()), 200
+    admin_dict = admin.to_dict().copy()
+    admin_dict["id"] = admin.id
+    return jsonify(admin_dict), 200
 
 
 @membership_blue_print.route('/admin/<admin_id>/create-admin/',
@@ -147,3 +148,15 @@ def update_church(admin_id):
     church = admin_service.update_church(admin_id, data)
     
     return jsonify(church.to_dict()), 200
+
+@membership_blue_print.route("/admin/<admin_id>/count/", strict_slashes=False)
+def count(admin_id):
+    """Route - get count of various aspect of the church"""
+    count = admin_service.count(admin_id)
+    return jsonify(count), 200
+
+@membership_blue_print.route("/admins/", strict_slashes=False)
+def all_admins():
+    """ROUTE - get all admins"""
+    admins = admin_service.get_all_admins()
+    return jsonify(admins), 200

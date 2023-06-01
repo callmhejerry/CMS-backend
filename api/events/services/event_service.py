@@ -196,7 +196,7 @@ class EventService():
         upcoming_events = []
         if all_events:
             for event in all_events:
-                if event.start_date > today or event.end_date > today:
+                if event.start_date > today and event.end_date > today:
                     upcoming_events.append(event.to_dict())
         return self.get_events_with_flier(upcoming_events, base_url)
 
@@ -204,7 +204,7 @@ class EventService():
     def past_events(self, base_url):
         """Get past events"""
         today = date.today()
-        all_events = self.event_dao.get_past_events(today)
+        all_events = self.event_dao.get_past_events(today,limit=5)
         past_events = list(map(lambda event: event.to_dict(), all_events))
         return self.get_events_with_flier(past_events, base_url)
     

@@ -43,6 +43,7 @@ class EventModel(BaseModel):
         new_dict['end_date'] = str(self.end_date)
         new_dict['start_time'] = str(self.start_time)
         new_dict['end_time'] = str(self.end_time)
-        new_dict['created_at'] = str(self.created_at)        
+        new_dict['created_at'] = str(self.created_at)     
+        new_dict["church"] = self.church.name   
         return new_dict
     

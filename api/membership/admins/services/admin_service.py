@@ -4,6 +4,7 @@ from api.membership.admins.daos.admin_dao import AdminDao
 from api.membership.members.daos.member_dao import MemberDao
 from api.membership.members.models.member_model import Gender, MemberModel, RelationshipStatus
 from api.shared.daos.church_dao import ChurchDao
+from api.events.services.event_service import EventDao
 
 
 class AdminService():
@@ -169,8 +170,9 @@ class AdminService():
             abort(404, description="EMAIL AND PASSWORD MUST BE PROVIDED")
         
         admin = self.admin_dao.get_by_email(email)
+            
         
-        if not admin.verify(password):
+        if not admin or not admin.verify(password):
             abort(403, description="INVALID EMAIL OR PASSWORD")
         
         return admin
@@ -264,4 +266,82 @@ class AdminService():
             abort(404, "NO CHURCH FOUND")
         return church
 
+
+    def count(self, admin_id):
+        """
+        get count of various aspect of the church
+        like : total number of members, total number of men,
+        total number of women, total number of single, married,
+        and divorse
+        """
+        admin = self.admin_dao.get_by_id(admin_id)
+        if admin is None:
+            abort(404, description="INVALID ADMIN")
+        church = admin.church
+        members = ChurchDao.get_all_members(church.id)
+        events = EventDao.get_event_by_admin(admin_id).count()
         
+        members_count = len(members)
+        male_count = 0
+        female_count = 0
+        single = 0
+        married = 0
+        divorse = 0
+        single_men = 0
+        single_women = 0
+        married_men = 0
+        marrried_women = 0
+        divorse_men = 0
+        divorse_women = 0
+        
+        for member in members:
+            if member.gender == Gender.FEMALE:
+                female_count += 1
+            if member.gender == Gender.MALE:
+                male_count += 1
+            if member.relationship_status == RelationshipStatus.SINGLE:
+                single += 1
+                if member.gender == Gender.MALE:
+                    single_men += 1
+                if member.gender == Gender.FEMALE:
+                    single_women += 1
+            if member.relationship_status == RelationshipStatus.MARRIED:
+                married += 1
+                if member.gender == Gender.MALE:
+                    married_men += 1
+                if member.gender == Gender.FEMALE:
+                    married_women += 1
+            if member.relationship_status == RelationshipStatus.DIVORSE:
+                divorse += 1
+                if member.gender == Gender.MALE:
+                    divorse_men += 1
+                if member.gender == Gender.FEMALE:
+                    divorse_women += 1
+        
+        return {
+            'total_member': members_count,
+            'men': male_count,
+            'women': female_count,
+            "total_events": events,
+            'single': {
+                "count" : single,
+                "men" : single_men,
+                "women" : single_women,
+                },
+            'married': {
+                "count": married,
+                "men" : married_men,
+                "women" : marrried_women,
+                },
+            'divorse': {
+                "count" : divorse,
+                "men": divorse_men,
+                "women": divorse_women,
+                },
+        }
+        
+    def get_all_admins(self):
+        """return a list of all admins"""
+        admins = self.admin_dao.get_all()
+        admin_list = list(map(lambda admin: admin.to_dict(), admins))
+        return admin_list

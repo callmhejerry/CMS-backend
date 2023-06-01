@@ -53,3 +53,5 @@ class MemberDao():
         db.session.delete(member)
         db.session.commit()
         return member
+
+            

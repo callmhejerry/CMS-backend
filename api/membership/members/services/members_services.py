@@ -38,7 +38,7 @@ class MemberService():
         data['relationship_status'] = RelationshipStatus.get_status(data['relationship_status'])
         if data.get('dob', None) is not None:
             data['dob'] = date.fromisoformat(data['dob'])
-
+        data["email_address"] = data["email_address"].lower()
         member = MemberDao.get_by_email(data['email_address'])
 
         if member is not None:
@@ -79,6 +79,7 @@ class MemberService():
         if data.get("password", None) is None:
             abort(403, description="PASSWORD MUST BE PRESENT")
         
+        data["email_address"] = data["email_address"].lower()
         member = self.member_dao.get_by_email(data["email_address"])
         if member is None:
             abort(403, description="PLEASE REGISTER")

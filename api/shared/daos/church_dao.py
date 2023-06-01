@@ -60,3 +60,4 @@ class ChurchDao():
                 setattr(church, key, value)
             db.session.commit()
         return church
+
